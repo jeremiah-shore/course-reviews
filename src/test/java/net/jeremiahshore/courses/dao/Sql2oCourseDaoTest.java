@@ -18,8 +18,7 @@ public class Sql2oCourseDaoTest {
 
     @Before
     public void setUp() {
-        String connectionString = "jdbc:h2:mem:testing;INIT=RUNSCRIPT from 'classpath:db/init.sql'";
-        Sql2o sql2o = new Sql2o(connectionString, "", "");
+        Sql2o sql2o = new Sql2o(TestConfig.CONNECTION_STRING, "", "");
         dao = new Sql2oCourseDao(sql2o);
         conn = sql2o.open(); //see tearDown for .close()
         course = createTestCourse();
