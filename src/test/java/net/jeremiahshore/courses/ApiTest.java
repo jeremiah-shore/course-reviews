@@ -60,7 +60,7 @@ public class ApiTest {
     }
 
     @Test
-    public void coursesCanBeAccessedById() throws DaoException {
+    public void coursesCanBeAccessedById() {
 
 
         ApiResponse response = client.request("GET", "/courses/" + course.getId());
@@ -87,6 +87,20 @@ public class ApiTest {
 
         assertEquals(201, response.getStatus());
     }
+
+    @Test
+    public void addingReviewToUnknownReturns500ErrorStatus() {
+        Map<String, Object> values = new HashMap<>();
+        values.put("rating", 5);
+        values.put("comment", "Test comment");
+
+        String url = "/courses/42/reviews";
+        ApiResponse response = client.request("POST", url, gson.toJson(values));
+
+        assertEquals(500, response.getStatus());
+    }
+
+
 
     @After
     public void tearDown() {
