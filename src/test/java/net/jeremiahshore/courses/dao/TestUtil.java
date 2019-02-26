@@ -2,7 +2,7 @@ package net.jeremiahshore.courses.dao;
 
 import net.jeremiahshore.courses.model.Course;
 
-public class TestConfig {
+public class TestUtil {
 
     public static final String CONNECTION_STRING = "jdbc:h2:mem:testing;INIT=RUNSCRIPT from 'classpath:db/init.sql'";
 

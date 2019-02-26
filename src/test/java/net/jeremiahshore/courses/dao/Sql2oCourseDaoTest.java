@@ -1,6 +1,5 @@
 package net.jeremiahshore.courses.dao;
 
-import net.jeremiahshore.courses.exc.DaoException;
 import net.jeremiahshore.courses.model.Course;
 import org.junit.After;
 import org.junit.Before;
@@ -18,10 +17,10 @@ public class Sql2oCourseDaoTest {
 
     @Before
     public void setUp() {
-        Sql2o sql2o = new Sql2o(TestConfig.CONNECTION_STRING, "", "");
+        Sql2o sql2o = new Sql2o(TestUtil.CONNECTION_STRING, "", "");
         dao = new Sql2oCourseDao(sql2o);
         conn = sql2o.open(); //see tearDown for .close()
-        course = TestConfig.createTestCourse();
+        course = TestUtil.createTestCourse();
     }
 
     @Test
