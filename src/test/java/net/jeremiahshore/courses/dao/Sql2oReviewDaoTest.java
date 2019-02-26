@@ -71,8 +71,14 @@ public class Sql2oReviewDaoTest {
     }
 
     @Test
-    public void existingReviewsCanBeFoundByCourseId() {
-        Assert.fail();
+    public void existingReviewsCanBeFoundByCourseId() throws DaoException {
+        reviewDao.add(review);
+
+        List<Review> reviewList = reviewDao.findByCourseId(review.getCourse_id());
+        Review retrievedReview = reviewList.get(0);
+
+        assert(review != retrievedReview); //make sure it's a different instance
+        assertEquals(review, retrievedReview);
     }
 
     @After
