@@ -25,7 +25,11 @@ public class Api {
         processArgs(args);
         Sql2o sql2o = getConfiguredSql2o(datasource);
         CourseDao courseDao = new Sql2oCourseDao(sql2o);
-        defineRoutes(courseDao, gson);
+
+        defineCourseHttpMethods(courseDao);
+        defineReviewHttpMethods();
+        defineExceptionHttpMethods();
+        defineAfterHttpMethod();
     }
 
     private static void processArgs(String[] args) {
@@ -43,7 +47,7 @@ public class Api {
         return new Sql2o(datasource + INIT_SCRIPT_PATH, "", "");
     }
 
-    private static void defineRoutes(CourseDao courseDao, Gson gson) {
+    private static void defineCourseHttpMethods(CourseDao courseDao) {
         post("/courses", JSON_CONTENT_TYPE, (request, response) -> {
             Course course = gson.fromJson(request.body(), Course.class);
             courseDao.add(course);
@@ -62,7 +66,13 @@ public class Api {
             }
             return course;
         }, gson::toJson);
+    }
 
+    private static void defineReviewHttpMethods() {
+        //todo: fill in this method stub
+    }
+
+    private static void defineExceptionHttpMethods() {
         exception(ApiError.class, (exception, request, response) -> {
             ApiError error = (ApiError) exception;
             Map<String, Object> jsonMap = new HashMap<>();
@@ -73,7 +83,9 @@ public class Api {
             response.status(error.getStatus());
             response.body(gson.toJson(jsonMap));
         });
+    }
 
+    private static void defineAfterHttpMethod() {
         after((request, response) -> response.type(JSON_CONTENT_TYPE));
     }
 
