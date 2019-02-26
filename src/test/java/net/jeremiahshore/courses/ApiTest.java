@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class ApiTest {
 
@@ -100,7 +101,20 @@ public class ApiTest {
         assertEquals(500, response.getStatus());
     }
 
+    @Test
+    public void getReviewsByCourseIdReturnsListOfMultipleReviewsWhenTheyExist() {
+        fail();
+    }
 
+    @Test
+    public void getReviewsByCourseIdReturnsEmptyListWhenNoneExist() {
+        fail();
+    }
+
+    @Test
+    public void getReviewsByUnknownCourseIdReturnsNotFoundStatus() {
+        fail();
+    }
 
     @After
     public void tearDown() {
