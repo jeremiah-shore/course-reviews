@@ -10,6 +10,9 @@ import org.junit.Test;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 public class Sql2oReviewDaoTest {
@@ -50,8 +53,14 @@ public class Sql2oReviewDaoTest {
     }
 
     @Test
-    public void addedReviewsAreReturnedFromFindAll() {
-        Assert.fail();
+    public void addedReviewsAreReturnedFromFindAll() throws DaoException {
+        Review secondReview = new Review(course.getId(), 4, "Pretty good.");
+        reviewDao.add(review);
+        reviewDao.add(secondReview);
+
+        List<Review> reviewList = reviewDao.findAll();
+
+        assertEquals(2, reviewList.size());
     }
 
     @Test
