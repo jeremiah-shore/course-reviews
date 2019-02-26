@@ -37,13 +37,15 @@ public class ApiTest {
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws DaoException {
         Sql2o sql2o = Api.getConfiguredSql2o(TEST_DATASOURCE);
         courseDao = new Sql2oCourseDao(sql2o);
         connection = sql2o.open();
         client = new ApiClient("http://localhost:" + TEST_PORT);
         gson = new Gson();
         course = TestUtil.createTestCourse();
+
+        courseDao.add(course);
     }
 
     @Test
@@ -59,7 +61,7 @@ public class ApiTest {
 
     @Test
     public void coursesCanBeAccessedById() throws DaoException {
-        courseDao.add(course);
+
 
         ApiResponse response = client.request("GET", "/courses/" + course.getId());
         Course retrievedCourse = gson.fromJson(response.getBody(), Course.class);
@@ -72,6 +74,18 @@ public class ApiTest {
         ApiResponse response = client.request("GET", "/courses/42");
 
         assertEquals(404, response.getStatus());
+    }
+
+    @Test
+    public void addingReviewGivesCreatedStatus() {
+        Map<String, Object> values = new HashMap<>();
+        values.put("rating", 5);
+        values.put("comment", "Test comment");
+
+        String url = String.format("/courses/%d/reviews", course.getId());
+        ApiResponse response = client.request("POST", url, gson.toJson(values));
+
+        assertEquals(201, response.getStatus());
     }
 
     @After
