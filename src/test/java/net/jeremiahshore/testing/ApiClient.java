@@ -19,7 +19,7 @@ public class ApiClient {
         return request(method, uri, null);
     }
 
-    private ApiResponse request(String method, String uri, String requestBody) {
+    public ApiResponse request(String method, String uri, String requestBody) {
         try {
             URL url = new URL(server + uri);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
