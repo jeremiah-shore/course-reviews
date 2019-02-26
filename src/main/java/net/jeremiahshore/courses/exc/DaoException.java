@@ -1,4 +1,4 @@
-package com.teamtreehouse.courses.exc;
+package net.jeremiahshore.courses.exc;
 
 public class DaoException extends Exception {
 

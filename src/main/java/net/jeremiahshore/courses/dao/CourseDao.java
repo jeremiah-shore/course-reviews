@@ -1,6 +1,6 @@
-package com.teamtreehouse.courses.dao;
+package net.jeremiahshore.courses.dao;
 
-import com.teamtreehouse.courses.exc.DaoException;
+import net.jeremiahshore.courses.exc.DaoException;
 import net.jeremiahshore.courses.model.Course;
 
 import java.util.List;
