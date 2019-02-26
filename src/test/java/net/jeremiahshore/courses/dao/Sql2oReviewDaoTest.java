@@ -65,7 +65,9 @@ public class Sql2oReviewDaoTest {
 
     @Test
     public void noReviewsReturnsEmptyList() {
-        Assert.fail();
+        List<Review> reviewList = reviewDao.findAll();
+
+        assertEquals(0, reviewList.size());
     }
 
     @Test
