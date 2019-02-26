@@ -96,10 +96,10 @@ public class Api {
         }, GSON::toJson);
 
         get("/courses/:course_id/reviews", JSON_CONTENT_TYPE, (request, response) -> {
-            int id = Integer.parseInt(request.params("course_id"));
-            List<Review> reviewList = reviewDao.findByCourseId(id);
+            int course_id = Integer.parseInt(request.params("course_id"));
+            List<Review> reviewList = reviewDao.findByCourseId(course_id);
             if(reviewList.isEmpty()) {
-                throw new ApiError(404, "Could not find any reviews with course_id " + id);
+                throw new ApiError(404, "Could not find any reviews with course_id " + course_id);
             }
             return reviewList;
         }, GSON::toJson);
