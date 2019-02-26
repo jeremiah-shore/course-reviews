@@ -32,8 +32,8 @@ public class Sql2oCourseDao implements CourseDao{
 
     @Override
     public List<Course> findAll() {
+        String sql = "SELECT * FROM courses";
         try(Connection connection = sql2o.open()) {
-            String sql = "SELECT * FROM courses";
             return connection.createQuery(sql)
                     .executeAndFetch(Course.class);
         }
@@ -41,8 +41,8 @@ public class Sql2oCourseDao implements CourseDao{
 
     @Override
     public Course findById(int id) {
+        String sql = "SELECT * FROM courses WHERE id = :id";
         try(Connection connection = sql2o.open()) {
-            String sql = "SELECT * FROM courses WHERE id = :id";
             return connection.createQuery(sql)
                     .addParameter("id", id)
                     .executeAndFetchFirst(Course.class);
