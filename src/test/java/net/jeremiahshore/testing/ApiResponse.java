@@ -1,4 +1,4 @@
-package net.jeremiah.shore.testing;
+package net.jeremiahshore.testing;
 
 public class ApiResponse {
     private final int status;
