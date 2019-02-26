@@ -17,16 +17,16 @@ public class Sql2oCourseDaoTest {
     private Course course;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         String connectionString = "jdbc:h2:mem:testing;INIT=RUNSCRIPT from 'classpath:db/init.sql'";
         Sql2o sql2o = new Sql2o(connectionString, "", "");
         dao = new Sql2oCourseDao(sql2o);
         conn = sql2o.open(); //see tearDown for .close()
+        course = createTestCourse();
     }
 
-    @Before
-    public void createTestCourse() {
-        course = new Course("Test", "http://test.com");
+    public static Course createTestCourse() {
+        return new Course("Test", "http://test.com");
     }
 
     @Test
@@ -46,7 +46,7 @@ public class Sql2oCourseDaoTest {
     }
 
     @Test
-    public void noCoursesReturnsEmptyList() throws Exception {
+    public void noCoursesReturnsEmptyList() {
         assertEquals(0, dao.findAll().size());
     }
 
@@ -60,7 +60,7 @@ public class Sql2oCourseDaoTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         conn.close();
     }
 }
