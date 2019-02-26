@@ -6,7 +6,9 @@ import net.jeremiahshore.courses.dao.Sql2oCourseDao;
 import net.jeremiahshore.courses.model.Course;
 import org.sql2o.Sql2o;
 
+import static spark.Spark.after;
 import static spark.Spark.post;
+import static spark.Spark.get;
 
 public class Api {
 
@@ -21,8 +23,18 @@ public class Api {
             Course course = gson.fromJson(request.body(), Course.class);
             courseDao.add(course);
             response.status(201);
-            response.type(JSON_CONTENT_TYPE);
             return course;
         }, gson::toJson); //response transform
+
+        get("/courses", JSON_CONTENT_TYPE,
+                (request, response) -> courseDao.findAll(), gson::toJson);
+
+        get("/courses/:id", JSON_CONTENT_TYPE, (request, response) -> {
+            int id = Integer.parseInt(request.params("id"));
+            //todo: what if this is not found?
+            return courseDao.findById(id);
+        }, gson::toJson);
+
+        after((request, response) -> response.type(JSON_CONTENT_TYPE));
     }
 }
