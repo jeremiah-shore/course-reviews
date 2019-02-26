@@ -1,9 +1,11 @@
 package net.jeremiahshore.courses;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import net.jeremiahshore.courses.dao.*;
 import net.jeremiahshore.courses.exc.DaoException;
 import net.jeremiahshore.courses.model.Course;
+import net.jeremiahshore.courses.model.Review;
 import net.jeremiahshore.testing.ApiClient;
 import net.jeremiahshore.testing.ApiResponse;
 import org.junit.*;
@@ -11,7 +13,10 @@ import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import spark.Spark;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -22,11 +27,12 @@ public class ApiTest {
     private static final String TEST_PORT = "4568";
     private static final String TEST_DATASOURCE = "jdbc:h2:mem:testing";
     private Connection connection;
-    private CourseDao courseDao;
     private ApiClient client;
     private Gson gson;
+
+    private CourseDao courseDao;
     private Course course;
-    private Sql2oReviewDao reviewDao;
+    private ReviewDao reviewDao;
 
 
     @BeforeClass
@@ -69,8 +75,6 @@ public class ApiTest {
 
     @Test
     public void coursesCanBeAccessedById() {
-
-
         ApiResponse response = client.request("GET", "/courses/" + course.getId());
         Course retrievedCourse = gson.fromJson(response.getBody(), Course.class);
 
@@ -109,8 +113,18 @@ public class ApiTest {
     }
 
     @Test
-    public void getReviewsByCourseIdReturnsListOfMultipleReviewsWhenTheyExist() {
-        fail();
+    public void getReviewsByCourseIdReturnsListOfMultipleReviewsWhenTheyExist() throws DaoException {
+        Review review = new Review(course.getId(), 3, "it was okay");
+        Review secondReview = new Review(course.getId(), 5, "it was great");
+        reviewDao.add(review);
+        reviewDao.add(secondReview);
+
+        String url = String.format("/courses/%d/reviews", course.getId());
+        ApiResponse response = client.request("GET", url);
+        Type listType = new TypeToken<ArrayList<Review>>(){}.getType();
+        List<Review> reviewList = gson.fromJson(response.getBody(), listType);
+
+        assertEquals(2, reviewList.size());
     }
 
     @Test
