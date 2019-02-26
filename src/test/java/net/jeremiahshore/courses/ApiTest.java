@@ -1,10 +1,7 @@
 package net.jeremiahshore.courses;
 
 import com.google.gson.Gson;
-import net.jeremiahshore.courses.dao.CourseDao;
-import net.jeremiahshore.courses.dao.Sql2oCourseDao;
-import net.jeremiahshore.courses.dao.Sql2oCourseDaoTest;
-import net.jeremiahshore.courses.dao.TestUtil;
+import net.jeremiahshore.courses.dao.*;
 import net.jeremiahshore.courses.exc.DaoException;
 import net.jeremiahshore.courses.model.Course;
 import net.jeremiahshore.testing.ApiClient;
@@ -29,6 +26,7 @@ public class ApiTest {
     private ApiClient client;
     private Gson gson;
     private Course course;
+    private Sql2oReviewDao reviewDao;
 
 
     @BeforeClass
@@ -39,13 +37,22 @@ public class ApiTest {
 
     @Before
     public void setUp() throws DaoException {
+        setupConnections();
+        configureTestData();
+    }
+
+    private void setupConnections() {
         Sql2o sql2o = Api.getConfiguredSql2o(TEST_DATASOURCE);
         courseDao = new Sql2oCourseDao(sql2o);
+        reviewDao = new Sql2oReviewDao(sql2o);
         connection = sql2o.open();
+
         client = new ApiClient("http://localhost:" + TEST_PORT);
         gson = new Gson();
-        course = TestUtil.createTestCourse();
+    }
 
+    private void configureTestData() throws DaoException {
+        course = TestUtil.createTestCourse();
         courseDao.add(course);
     }
 
