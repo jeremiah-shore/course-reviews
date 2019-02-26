@@ -3,8 +3,12 @@ package net.jeremiahshore.courses;
 import com.google.gson.Gson;
 import net.jeremiahshore.courses.dao.CourseDao;
 import net.jeremiahshore.courses.dao.Sql2oCourseDao;
+import net.jeremiahshore.courses.exc.ApiError;
 import net.jeremiahshore.courses.model.Course;
 import org.sql2o.Sql2o;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static spark.Spark.*;
 
@@ -52,9 +56,23 @@ public class Api {
 
         get("/courses/:id", JSON_CONTENT_TYPE, (request, response) -> {
             int id = Integer.parseInt(request.params("id"));
-            //todo: what if this is not found?
-            return courseDao.findById(id);
+            Course course = courseDao.findById(id);
+            if (course == null) {
+                throw new ApiError(404, "Could not find course with id " + id);
+            }
+            return course;
         }, gson::toJson);
+
+        exception(ApiError.class, (exception, request, response) -> {
+            ApiError error = (ApiError) exception;
+            Map<String, Object> jsonMap = new HashMap<>();
+            jsonMap.put("status", error.getStatus());
+            jsonMap.put("errorMessage", error.getMessage());
+
+            response.type(JSON_CONTENT_TYPE); //after does not run in .exception()
+            response.status(error.getStatus());
+            response.body(gson.toJson(jsonMap));
+        });
 
         after((request, response) -> response.type(JSON_CONTENT_TYPE));
     }
