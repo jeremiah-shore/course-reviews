@@ -2,12 +2,16 @@ package net.jeremiahshore.courses;
 
 import com.google.gson.Gson;
 import net.jeremiahshore.courses.dao.CourseDao;
+import net.jeremiahshore.courses.dao.ReviewDao;
 import net.jeremiahshore.courses.dao.Sql2oCourseDao;
+import net.jeremiahshore.courses.dao.Sql2oReviewDao;
 import net.jeremiahshore.courses.exc.ApiError;
 import net.jeremiahshore.courses.model.Course;
+import net.jeremiahshore.courses.model.Review;
 import org.sql2o.Sql2o;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static spark.Spark.*;
@@ -23,11 +27,13 @@ public class Api {
 
     public static void main(String[] args) {
         processArgs(args);
+
         Sql2o sql2o = getConfiguredSql2o(datasource);
         CourseDao courseDao = new Sql2oCourseDao(sql2o);
+        ReviewDao reviewDao = new Sql2oReviewDao(sql2o);
 
         defineCourseHttpMethods(courseDao);
-        defineReviewHttpMethods();
+        defineReviewHttpMethods(reviewDao);
         defineExceptionHttpMethods();
         defineAfterHttpMethod();
     }
@@ -46,7 +52,7 @@ public class Api {
         }
     }
 
-    static Sql2o getConfiguredSql2o(String datasource) {
+    static Sql2o getConfiguredSql2o(String datasource) { //necessary for use in test methods as well
         return new Sql2o(datasource + INIT_SCRIPT_PATH, "", "");
     }
 
@@ -71,8 +77,25 @@ public class Api {
         }, GSON::toJson);
     }
 
-    private static void defineReviewHttpMethods() {
-        //todo: fill in this method stub
+    private static void defineReviewHttpMethods(ReviewDao reviewDao) {
+        post("/reviews", JSON_CONTENT_TYPE, (request, response) -> {
+            Review review = GSON.fromJson(request.body(), Review.class);
+            reviewDao.add(review);
+            response.status(201);
+            return review;
+        }, GSON::toJson);
+
+        get("courses/:course_id/reviews", JSON_CONTENT_TYPE, (request, response) -> {
+            int id = Integer.parseInt(request.params("course_id"));
+            List<Review> reviewList = reviewDao.findByCourseId(id);
+            if(reviewList.isEmpty()) {
+                throw new ApiError(404, "Could not find any reviews with course_id " + id);
+            }
+            return reviewList;
+        }, GSON::toJson);
+
+        get("/reviews/all", JSON_CONTENT_TYPE,
+                (request, response) -> reviewDao.findAll(), GSON::toJson);
     }
 
     private static void defineExceptionHttpMethods() {
