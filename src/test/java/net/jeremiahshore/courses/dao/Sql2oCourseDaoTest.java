@@ -21,11 +21,7 @@ public class Sql2oCourseDaoTest {
         Sql2o sql2o = new Sql2o(TestConfig.CONNECTION_STRING, "", "");
         dao = new Sql2oCourseDao(sql2o);
         conn = sql2o.open(); //see tearDown for .close()
-        course = createTestCourse();
-    }
-
-    public static Course createTestCourse() {
-        return new Course("Test", "http://test.com");
+        course = TestConfig.createTestCourse();
     }
 
     @Test
