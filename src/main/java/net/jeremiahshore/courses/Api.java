@@ -6,6 +6,7 @@ import net.jeremiahshore.courses.dao.ReviewDao;
 import net.jeremiahshore.courses.dao.Sql2oCourseDao;
 import net.jeremiahshore.courses.dao.Sql2oReviewDao;
 import net.jeremiahshore.courses.exc.ApiError;
+import net.jeremiahshore.courses.exc.DaoException;
 import net.jeremiahshore.courses.model.Course;
 import net.jeremiahshore.courses.model.Review;
 import org.sql2o.Sql2o;
@@ -78,14 +79,23 @@ public class Api {
     }
 
     private static void defineReviewHttpMethods(ReviewDao reviewDao) {
-        post("/reviews", JSON_CONTENT_TYPE, (request, response) -> {
+        post("/courses/:course_id/reviews", JSON_CONTENT_TYPE, (request, response) -> {
+            int course_id = Integer.parseInt(request.params("course_id"));
             Review review = GSON.fromJson(request.body(), Review.class);
-            reviewDao.add(review);
+            review.setCourse_id(course_id);
+
+            try {
+                reviewDao.add(review);
+            } catch(DaoException ex) {
+                ex.printStackTrace();
+                throw new ApiError(500, ex.getMessage());
+            }
+
             response.status(201);
             return review;
         }, GSON::toJson);
 
-        get("courses/:course_id/reviews", JSON_CONTENT_TYPE, (request, response) -> {
+        get("/courses/:course_id/reviews", JSON_CONTENT_TYPE, (request, response) -> {
             int id = Integer.parseInt(request.params("course_id"));
             List<Review> reviewList = reviewDao.findByCourseId(id);
             if(reviewList.isEmpty()) {
