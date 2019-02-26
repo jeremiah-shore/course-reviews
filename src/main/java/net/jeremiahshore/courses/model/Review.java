@@ -5,12 +5,12 @@ import java.util.Objects;
 public class Review {
 
     private int id;
-    private int courseId;
+    private int course_id;
     private int rating;
     private String comment;
 
-    public Review(int courseId, int rating, String comment) {
-        this.courseId = courseId;
+    public Review(int course_id, int rating, String comment) {
+        this.course_id = course_id;
         this.rating = rating;
         this.comment = comment;
     }
@@ -23,12 +23,12 @@ public class Review {
         this.id = id;
     }
 
-    public int getCourseId() {
-        return courseId;
+    public int getCourse_id() {
+        return course_id;
     }
 
-    public void setCourseId(int courseId) {
-        this.courseId = courseId;
+    public void setCourse_id(int course_id) {
+        this.course_id = course_id;
     }
 
     public int getRating() {
@@ -53,7 +53,7 @@ public class Review {
         if (o == null || getClass() != o.getClass()) return false;
         Review review = (Review) o;
         return id == review.id &&
-                courseId == review.courseId &&
+                course_id == review.course_id &&
                 rating == review.rating &&
                 Objects.equals(comment, review.comment);
     }
@@ -61,6 +61,6 @@ public class Review {
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, courseId, rating, comment);
+        return Objects.hash(id, course_id, rating, comment);
     }
 }
