@@ -14,19 +14,23 @@ public class Sql2oCourseDaoTest {
 
     private Sql2oCourseDao dao;
     private Connection conn;
+    private Course course;
 
     @Before
     public void setUp() throws Exception {
         String connectionString = "jdbc:h2:mem:testing;INIT=RUNSCRIPT from 'classpath:db/init.sql'";
         Sql2o sql2o = new Sql2o(connectionString, "", "");
         dao = new Sql2oCourseDao(sql2o);
-        //keep conection open through entire test so that it isn't wiped out
-        conn = sql2o.open();
+        conn = sql2o.open(); //see tearDown for .close()
+    }
+
+    @Before
+    public void createTestCourse() {
+        course = new Course("Test", "http://test.com");
     }
 
     @Test
     public void addingCourseSetsId() throws Exception {
-        Course course = new Course("Test", "http://test.com");
         int originalCourseId = course.getId();
 
         dao.add(course);
@@ -36,8 +40,6 @@ public class Sql2oCourseDaoTest {
 
     @Test
     public void addedCoursesAreReturnedFromFindAll() throws Exception {
-        Course course = new Course("Test", "http://test.com");
-
         dao.add(course);
 
         assertEquals(1, dao.findAll().size());
@@ -46,6 +48,15 @@ public class Sql2oCourseDaoTest {
     @Test
     public void noCoursesReturnsEmptyList() throws Exception {
         assertEquals(0, dao.findAll().size());
+    }
+
+    @Test
+    public void existingCoursesCanBeFoundById() throws Exception {
+        dao.add(course);
+
+        Course foundCourse = dao.findById(course.getId());
+
+        assertEquals(course, foundCourse);
     }
 
     @After
