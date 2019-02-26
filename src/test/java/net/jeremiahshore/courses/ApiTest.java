@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import net.jeremiahshore.courses.dao.CourseDao;
 import net.jeremiahshore.courses.dao.Sql2oCourseDao;
 import net.jeremiahshore.courses.dao.Sql2oCourseDaoTest;
+import net.jeremiahshore.courses.dao.TestUtil;
 import net.jeremiahshore.courses.exc.DaoException;
 import net.jeremiahshore.courses.model.Course;
 import net.jeremiahshore.testing.ApiClient;
@@ -42,7 +43,7 @@ public class ApiTest {
         connection = sql2o.open();
         client = new ApiClient("http://localhost:" + TEST_PORT);
         gson = new Gson();
-        course = Sql2oCourseDaoTest.createTestCourse();
+        course = TestUtil.createTestCourse();
     }
 
     @Test
