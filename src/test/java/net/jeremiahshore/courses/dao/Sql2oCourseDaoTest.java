@@ -1,5 +1,6 @@
 package net.jeremiahshore.courses.dao;
 
+import net.jeremiahshore.courses.exc.DaoException;
 import net.jeremiahshore.courses.model.Course;
 import org.junit.After;
 import org.junit.Before;
@@ -31,6 +32,20 @@ public class Sql2oCourseDaoTest {
         dao.add(course);
 
         assertNotEquals(originalCourseId, course.getId());
+    }
+
+    @Test
+    public void addedCoursesAreReturnedFromFindAll() throws Exception {
+        Course course = new Course("Test", "http://test.com");
+
+        dao.add(course);
+
+        assertEquals(1, dao.findAll().size());
+    }
+
+    @Test
+    public void noCoursesReturnsEmptyList() throws Exception {
+        assertEquals(0, dao.findAll().size());
     }
 
     @After
