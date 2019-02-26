@@ -53,7 +53,7 @@ public class Sql2oReviewDaoTest {
     }
 
     @Test
-    public void addedReviewsAreReturnedFromFindAll() throws DaoException {
+    public void multipleReviewsAreFoundWhenTheyExistForACourse() throws DaoException {
         Review secondReview = new Review(course.getId(), 4, "Pretty good.");
         reviewDao.add(review);
         reviewDao.add(secondReview);
@@ -74,11 +74,18 @@ public class Sql2oReviewDaoTest {
     public void existingReviewsCanBeFoundByCourseId() throws DaoException {
         reviewDao.add(review);
 
-        List<Review> reviewList = reviewDao.findByCourseId(review.getCourse_id());
+        List<Review> reviewList = reviewDao.findByCourseId(course.getId());
         Review retrievedReview = reviewList.get(0);
 
         assert(review != retrievedReview); //make sure it's a different instance
         assertEquals(review, retrievedReview);
+    }
+
+    @Test
+    public void findByCourseIdReturnsEmptyListWhenNoReviewsExist() {
+        List<Review> reviewList = reviewDao.findByCourseId(course.getId());
+
+        assertEquals(0, reviewList.size());
     }
 
     @After
