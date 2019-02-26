@@ -128,13 +128,19 @@ public class ApiTest {
     }
 
     @Test
-    public void getReviewsByCourseIdReturnsEmptyListWhenNoneExist() {
-        fail();
+    public void getReviewsByCourseIdReturnsNotFoundStatus() {
+        String url = String.format("/courses/%d/reviews", course.getId());
+        ApiResponse response = client.request("GET", url);
+
+        assertEquals(404, response.getStatus());
     }
 
     @Test
     public void getReviewsByUnknownCourseIdReturnsNotFoundStatus() {
-        fail();
+        String url = "/courses/42/reviews";
+        ApiResponse response = client.request("GET", url);
+
+        assertEquals(404, response.getStatus());
     }
 
     @After
